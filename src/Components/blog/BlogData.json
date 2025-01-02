@@ -1,0 +1,37 @@
+[
+  {
+    "icon": "faCalendar",
+    "date": "2023-10-10",
+    "title": "Mastering Expense Tracking",
+    "disc": "Expense tracking is the cornerstone of financial management. Learn how to effectively monitor your spending, identify unnecessary expenses, and set achievable financial goals. Discover the tools and techniques that make tracking effortless and insightful. Start building a habit that leads to financial freedom.",
+    "link": "https://www.google.com"
+  },
+  {
+    "icon": "faCalendar",
+    "date": "2023-11-05",
+    "title": "The Art of Budget Planning",
+    "disc": "Budget planning helps you control your finances with confidence. Explore proven methods to create realistic budgets tailored to your lifestyle. Learn how to prioritize needs over wants and allocate resources efficiently. Whether you're saving for a vacation or paying off debt, budgeting is your key to success.",
+    "link": "https://www.example.com"
+  },
+  {
+    "icon": "faCalendar",
+    "date": "2023-12-01",
+    "title": "Year-End Savings Guide",
+    "disc": "As the year comes to a close, it's time to reflect on your financial journey. This guide offers practical tips to maximize your savings before the year ends. From tax-efficient strategies to cutting down on unnecessary expenses, get ready to enter the new year with a stronger financial foundation.",
+    "link": "https://www.sample.com"
+  },
+  {
+    "icon": "faCalendar",
+    "date": "2024-01-15",
+    "title": "Smart Investments for Beginners",
+    "disc": "Investing can be intimidating, but it doesn't have to be. Learn the basics of smart investing, from understanding different asset classes to managing risks. Discover how small, consistent investments can grow into substantial wealth over time. Start your journey towards financial independence today.",
+    "link": "https://www.investing.com"
+  },
+  {
+    "icon": "faCalendar",
+    "date": "2024-02-20",
+    "title": "Saving Hacks for Everyday Life",
+    "disc": "Saving money isn't just about big changes; it's the small habits that make a big difference. From meal planning to reducing energy costs, explore actionable hacks that fit seamlessly into your daily routine. Build a lifestyle that balances enjoyment and financial security effortlessly.",
+    "link": "https://www.savinghacks.com"
+  }
+]
