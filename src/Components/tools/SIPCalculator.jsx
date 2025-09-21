@@ -59,16 +59,16 @@ function SIPCalculator() {
       const months = time * 12; // Convert years to months
 
       // Total investment
-      const totalInvestment = monthlyInvestment * months;
+      const totalInvestment = (monthlyInvestment * months).toFixed(2);
 
       // Total value (future value)
       const totalValue =
          (monthlyInvestment *
-            ((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate))) /
-         monthlyRate;
+            (((Math.pow(1 + monthlyRate, months) - 1) * (1 + monthlyRate))) /
+         monthlyRate).toFixed(2);
 
       // Expected return
-      const expectedReturn = totalValue - totalInvestment;
+      const expectedReturn = (totalValue - totalInvestment).toFixed(2);
 
       // Update state
       setTotalInvestment(totalInvestment);
@@ -126,7 +126,7 @@ function SIPCalculator() {
                         </label>
                         <input
                            onChange={handleRate}
-                           type="number"
+                           type="decimal"
                            placeholder="Enter Rate in %"
                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                         />

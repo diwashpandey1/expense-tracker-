@@ -1,37 +1,83 @@
 [
   {
-    "icon": "faCalendar",
-    "date": "2023-10-10",
-    "title": "Mastering Expense Tracking",
-    "disc": "Expense tracking is the cornerstone of financial management. Learn how to effectively monitor your spending, identify unnecessary expenses, and set achievable financial goals. Discover the tools and techniques that make tracking effortless and insightful. Start building a habit that leads to financial freedom.",
-    "link": "https://www.google.com"
+    "date": "2025-05-15",
+    "title": "The 10 Best Ways to Save Money Right Now",
+    "disc": "Looking for actionable strategies to save money immediately? These tips can help you reduce expenses and grow your savings account faster.",
+    "link": "https://www.nerdwallet.com/article/finance/best-ways-to-save-money",
+    "image": "https://images.unsplash.com/photo-1556742031-c6961e8560b0?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Savings", "Tips"],
+    "iconName": "PiggyBank"
   },
   {
-    "icon": "faCalendar",
-    "date": "2023-11-05",
-    "title": "The Art of Budget Planning",
-    "disc": "Budget planning helps you control your finances with confidence. Explore proven methods to create realistic budgets tailored to your lifestyle. Learn how to prioritize needs over wants and allocate resources efficiently. Whether you're saving for a vacation or paying off debt, budgeting is your key to success.",
-    "link": "https://www.example.com"
+    "date": "2025-03-28",
+    "title": "Understanding the 50/30/20 Budget Rule",
+    "disc": "A breakdown of the popular 50/30/20 budgeting rule — what it is, how to apply it, and when it might not work.",
+    "link": "https://www.investopedia.com/terms/1/50-30-20-rule.asp",
+    "image": "https://images.unsplash.com/photo-1587502536263-3bb9b4848470?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Budgeting", "Guide"],
+    "iconName": "ClipboardList"
   },
   {
-    "icon": "faCalendar",
-    "date": "2023-12-01",
-    "title": "Year-End Savings Guide",
-    "disc": "As the year comes to a close, it's time to reflect on your financial journey. This guide offers practical tips to maximize your savings before the year ends. From tax-efficient strategies to cutting down on unnecessary expenses, get ready to enter the new year with a stronger financial foundation.",
-    "link": "https://www.sample.com"
+    "date": "2025-06-01",
+    "title": "How Much Emergency Fund Do You Really Need?",
+    "disc": "Explores different guidelines and real life examples to help you determine your ideal emergency fund size.",
+    "link": "https://www.cnbc.com/2025/06/01/how-much-emergency-fund-do-you-need.html",
+    "image": "https://images.unsplash.com/photo-1573164574392-82aee94fa54f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Finance", "Planning"],
+    "iconName": "ShieldCheck"
   },
   {
-    "icon": "faCalendar",
-    "date": "2024-01-15",
-    "title": "Smart Investments for Beginners",
-    "disc": "Investing can be intimidating, but it doesn't have to be. Learn the basics of smart investing, from understanding different asset classes to managing risks. Discover how small, consistent investments can grow into substantial wealth over time. Start your journey towards financial independence today.",
-    "link": "https://www.investing.com"
+    "date": "2025-04-10",
+    "title": "Top Money Mistakes People Make in Their 20s",
+    "disc": "Early financial missteps are common — here are some to watch out for and how to avoid them.",
+    "link": "https://www.forbes.com/advisor/personal-finance/money-mistakes-20s/",
+    "image": "https://images.unsplash.com/photo-1542122034-44431ca3467a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Finance", "Advice"],
+    "iconName": "AlertCircle"
   },
   {
-    "icon": "faCalendar",
-    "date": "2024-02-20",
-    "title": "Saving Hacks for Everyday Life",
-    "disc": "Saving money isn't just about big changes; it's the small habits that make a big difference. From meal planning to reducing energy costs, explore actionable hacks that fit seamlessly into your daily routine. Build a lifestyle that balances enjoyment and financial security effortlessly.",
-    "link": "https://www.savinghacks.com"
+    "date": "2025-02-14",
+    "title": "How to Pay Off Credit Card Debt Fast",
+    "disc": "Strategies that can help you reduce credit card balances more quickly, without harming your credit score.",
+    "link": "https://www.moneycrashers.com/pay-off-credit-card-debt-fast/",
+    "image": "https://images.unsplash.com/photo-1600903545224-4c25f566e339?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Debt", "Strategy"],
+    "iconName": "DollarSign"
+  },
+  {
+    "date": "2025-01-30",
+    "title": "Minimalist Budgeting: Spending Less, Living Better",
+    "disc": "How minimalist lifestyle principles can simplify budgeting, cut costs, and help you focus on what matters.",
+    "link": "https://www.theminimalists.com/budgeting/",
+    "image": "https://images.unsplash.com/photo-1516251193007-45ef944ab0c6?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Lifestyle", "Budgeting"],
+    "iconName": "Leaf"
+  },
+  {
+    "date": "2024-12-01",
+    "title": "Smart Ways to Cut Monthly Bills",
+    "disc": "Saving money doesn’t always mean earning more. Sometimes just renegotiating or being smart about your monthly expenses can make a big difference.",
+    "link": "https://www.nytimes.com/guides/smarterliving/save-money",
+    "image": "https://images.unsplash.com/photo-1582661705856-43b28ac0b490?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Savings", "SmartLiving"],
+    "iconName": "Scissors"
+  },
+  {
+    "date": "2024-11-18",
+    "title": "Investing for Beginners: Where to Start",
+    "disc": "If you’re new to investing, this guide walks you through the essentials—types of investments, how to get started, and resources to keep learning.",
+    "link": "https://www.investor.gov/introduction-investing-beginners",
+    "image": "https://images.unsplash.com/photo-1573164574472-5b9a650e1a5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Investing", "Beginner"],
+    "iconName": "TrendingUp"
+  },
+  {
+    "date": "2024-10-05",
+    "title": "How to Build Good Financial Habits That Last",
+    "disc": "Small habits over time lead to big results. Learn how to cultivate money habits that stick.",
+    "link": "https://www.huffpost.com/entry/financial-habits_l_5c4c5e46e4b0b39ed5f3b2b9",
+    "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+    "tags": ["Habits", "PersonalFinance"],
+    "iconName": "RefreshCw"
   }
 ]

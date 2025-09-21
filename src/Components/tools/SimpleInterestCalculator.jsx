@@ -58,21 +58,21 @@ function SimpleInterestCalculator() {
    };
 
    return (
-      <section className="w-full min-h-screen flex justify-center items-center bg-gray-50 p-6">
-         <div className="w-full max-w-5xl flex flex-col gap-10 mt-10">
+      <section className="flex items-center justify-center w-full min-h-screen p-6 bg-gray-50">
+         <div className="flex flex-col w-full max-w-5xl gap-10 mt-10">
             {/* Title */}
-            <h2 className="text-2xl font-semibold text-gray-700 mt-10">
+            <h2 className="mt-10 text-2xl font-semibold text-gray-700">
                Simple Interest Calculator
             </h2>
 
             {/* Main Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                {/* Left Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
+               <div className="p-6 bg-white rounded-lg shadow-md">
                   <form className="space-y-5" onSubmit={handleCalculatedResult}>
                      {/* Currency Selector */}
                      <div>
-                        <label className="block text-gray-600 mb-2">
+                        <label className="block mb-2 text-gray-600">
                            Currency ({currency})
                         </label>
                         <select
@@ -89,7 +89,7 @@ function SimpleInterestCalculator() {
 
                      {/* Principal Input */}
                      <div>
-                        <label className="block text-gray-600 mb-2">
+                        <label className="block mb-2 text-gray-600">
                            Principal (P)
                         </label>
                         <input
@@ -102,7 +102,7 @@ function SimpleInterestCalculator() {
 
                      {/* Time Input */}
                      <div>
-                        <label className="block text-gray-600 mb-2">
+                        <label className="block mb-2 text-gray-600">
                            Time (T)
                         </label>
                         <input
@@ -115,7 +115,7 @@ function SimpleInterestCalculator() {
 
                      {/* Rate Input */}
                      <div>
-                        <label className="block text-gray-600 mb-2">
+                        <label className="block mb-2 text-gray-600">
                            Rate of Interest (R)
                         </label>
                         <input
@@ -129,34 +129,34 @@ function SimpleInterestCalculator() {
                      {/* Calculate Button */}
                      <button
                         type="submit"
-                        className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition duration-300">
+                        className="w-full py-2 text-white transition duration-300 bg-green-500 rounded-lg hover:bg-green-600">
                         Calculate
                      </button>
                   </form>
                </div>
 
                {/* Right Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
+               <div className="p-6 bg-white rounded-lg shadow-md">
                   <div className="flex justify-center mb-6">
                      <div className="w-64 h-64">
                         <Doughnut data={data} options={options} />
                      </div>
                   </div>
                   <div className="space-y-4">
-                     <p className="text-gray-600 flex justify-between">
+                     <p className="flex justify-between text-gray-600">
                         <span>Principal Amount:</span>
                         <span className="text-lg font-bold text-green-500">
                            {currency + " " + principal}
                         </span>
                      </p>
-                     <p className="text-gray-600 flex justify-between">
+                     <p className="flex justify-between text-gray-600">
                         <span>Simple Interest:</span>
                         <span className="text-lg font-bold text-green-500">
                            {currency + " " + (simpleInterest || 0)}
                         </span>
                      </p>
                      <hr />
-                     <p className="text-gray-600 flex justify-between">
+                     <p className="flex justify-between text-gray-600">
                         <span>Total Amount:</span>
                         <span className="text-xl font-bold text-green-500">
                            {currency + " " + (totalAmount || 0)}
@@ -169,7 +169,7 @@ function SimpleInterestCalculator() {
             {/* Bottom Information */}
             <div className="flex flex-col gap-6">
                {/* Formula Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
+               <div className="p-6 bg-white rounded-lg shadow-md">
                   <h3 className="text-[1.7em] font-semibold mb-4">
                      Understanding Simple Interest
                   </h3>
@@ -179,8 +179,8 @@ function SimpleInterestCalculator() {
                      principal amount. Unlike compound interest, the interest
                      earned does not earn additional interest over time.
                   </p>
-                  <div className="py-6 px-4 bg-green-100 rounded-md shadow-md">
-                     <h4 className="text-lg font-semibold mb-2">
+                  <div className="px-4 py-6 bg-green-100 rounded-md shadow-md">
+                     <h4 className="mb-2 text-lg font-semibold">
                         Simple Interest Formula Explained
                      </h4>
                      <p className="mb-4 text-[#4b5563]">
@@ -197,14 +197,14 @@ function SimpleInterestCalculator() {
                </div>
 
                {/* Applications Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
+               <div className="p-6 bg-white rounded-lg shadow-md">
                   <h3 className="text-[1.7em] font-semibold mb-4">
                      When to Use Simple Interest
                   </h3>
-                  <h4 className="text-lg font-semibold mb-2">
+                  <h4 className="mb-2 text-lg font-semibold">
                      Common Applications
                   </h4>
-                  <ul className="list-disc pl-5 mb-4">
+                  <ul className="pl-5 mb-4 list-disc">
                      <li>Short-term personal loans</li>
                      <li>Car loans and auto financing</li>
                      <li>Consumer loans</li>
@@ -212,8 +212,8 @@ function SimpleInterestCalculator() {
                      <li>Some types of mortgages</li>
                      <li>Education loans</li>
                   </ul>
-                  <h4 className="text-lg font-semibold mb-2">Advantages</h4>
-                  <ul className="list-disc pl-5">
+                  <h4 className="mb-2 text-lg font-semibold">Advantages</h4>
+                  <ul className="pl-5 list-disc">
                      <li>Easy to calculate and understand</li>
                      <li>Predictable payment amounts</li>
                      <li>Lower total interest compared to compound interest</li>
@@ -223,13 +223,13 @@ function SimpleInterestCalculator() {
                </div>
 
                {/* Tips and Considerations Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
+               <div className="p-6 bg-white rounded-lg shadow-md">
                   <h3 className="text-[1.7em] font-semibold mb-4">
                      Tips and Considerations
                   </h3>
                   <div>
                      <div className="mb-4 px-4 py-3 border-l-[5px] border-l-green-500">
-                        <span className="text-black text-lg font-semibold">
+                        <span className="text-lg font-semibold text-black">
                            Compare Interest Rates
                         </span>
                         <p className="text-[#4b5563]">
@@ -239,7 +239,7 @@ function SimpleInterestCalculator() {
                         </p>
                      </div>
                      <div className="mb-4 px-4 py-3 border-l-[5px] border-l-green-500">
-                        <span className="text-black text-lg font-semibold">
+                        <span className="text-lg font-semibold text-black">
                            Consider the Time Period
                         </span>
                         <p className=" text-[#4b5563]"> Longer loan terms mean more interest paid
@@ -248,7 +248,7 @@ function SimpleInterestCalculator() {
                         </p>
                      </div>
                      <div className="mb-4 px-4 py-3 border-l-[5px] border-l-green-500">
-                        <span className="text-black text-lg font-semibold">
+                        <span className="text-lg font-semibold text-black">
                            Check for Additional Fees
                         </span>
                         <p className=" text-[#4b5563]"> Besides interest, look for any processing fees,
@@ -260,12 +260,12 @@ function SimpleInterestCalculator() {
                </div>
 
                {/* Example Section */}
-               <div className="bg-white p-6 rounded-lg shadow-md">
-                  <h3 className="text-lg font-semibold mb-4">
+               <div className="p-6 bg-white rounded-lg shadow-md">
+                  <h3 className="mb-4 text-lg font-semibold">
                      Example Calculations
                   </h3>
                   <p className="mb-4">Let's look at some practical examples:</p>
-                  <p className=" py-4 px-2 bg-gray-100 shadow-md rounded-md mb-4">
+                  <p className="px-2 py-4 mb-4 bg-gray-100 rounded-md shadow-md ">
                      <strong>Example 1: Personal Loan</strong> <br />
                      Principal: $10,000 <br />
                      Interest Rate: 5% per year <br />
@@ -273,7 +273,7 @@ function SimpleInterestCalculator() {
                      Simple Interest = $10,000 × 0.05 × 3 = $1,500 <br />
                      Total Amount = $11,500
                   </p>
-                  <p className="py-4 px-2 bg-gray-100 shadow-md rounded-md">
+                  <p className="px-2 py-4 bg-gray-100 rounded-md shadow-md">
                      <strong>Example 2: Car Loan</strong> <br />
                      Principal: $20,000 <br />
                      Interest Rate: 4% per year <br />

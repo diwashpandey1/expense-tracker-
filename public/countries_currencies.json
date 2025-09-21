@@ -1,0 +1,142 @@
+[
+  {
+    "country": "Afghanistan",
+    "currency": "Afghan Afghani",
+    "currency_code": "AFN"
+  },
+  {
+    "country": "Albania",
+    "currency": "Albanian Lek",
+    "currency_code": "ALL"
+  },
+  {
+    "country": "Algeria",
+    "currency": "Algerian Dinar",
+    "currency_code": "DZD"
+  },
+  {
+    "country": "Andorra",
+    "currency": "Euro",
+    "currency_code": "EUR"
+  },
+  {
+    "country": "Angola",
+    "currency": "Angolan Kwanza",
+    "currency_code": "AOA"
+  },
+  {
+    "country": "Antigua and Barbuda",
+    "currency": "East Caribbean Dollar",
+    "currency_code": "XCD"
+  },
+  {
+    "country": "Argentina",
+    "currency": "Argentine Peso",
+    "currency_code": "ARS"
+  },
+  {
+    "country": "Armenia",
+    "currency": "Armenian Dram",
+    "currency_code": "AMD"
+  },
+  {
+    "country": "Australia",
+    "currency": "Australian Dollar",
+    "currency_code": "AUD"
+  },
+  {
+    "country": "Austria",
+    "currency": "Euro",
+    "currency_code": "EUR"
+  },
+  {
+    "country": "Azerbaijan",
+    "currency": "Azerbaijani Manat",
+    "currency_code": "AZN"
+  },
+  {
+    "country": "Bahamas",
+    "currency": "Bahamian Dollar",
+    "currency_code": "BSD"
+  },
+  {
+    "country": "Bahrain",
+    "currency": "Bahraini Dinar",
+    "currency_code": "BHD"
+  },
+  {
+    "country": "Bangladesh",
+    "currency": "Bangladeshi Taka",
+    "currency_code": "BDT"
+  },
+  {
+    "country": "Barbados",
+    "currency": "Barbadian Dollar",
+    "currency_code": "BBD"
+  },
+  {
+    "country": "Belarus",
+    "currency": "Belarusian Ruble",
+    "currency_code": "BYN"
+  },
+  {
+    "country": "Belgium",
+    "currency": "Euro",
+    "currency_code": "EUR"
+  },
+  {
+    "country": "Belize",
+    "currency": "Belize Dollar",
+    "currency_code": "BZD"
+  },
+  {
+    "country": "Benin",
+    "currency": "CFA Franc BCEAO",
+    "currency_code": "XOF"
+  },
+  {
+    "country": "Bhutan",
+    "currency": "Ngultrum",
+    "currency_code": "BTN"
+  },
+  {
+    "country": "Bolivia",
+    "currency": "Boliviano",
+    "currency_code": "BOB"
+  },
+  {
+    "country": "Bosnia and Herzegovina",
+    "currency": "Convertible Mark",
+    "currency_code": "BAM"
+  },
+  {
+    "country": "Botswana",
+    "currency": "Pula",
+    "currency_code": "BWP"
+  },
+  {
+    "country": "Brazil",
+    "currency": "Brazilian Real",
+    "currency_code": "BRL"
+  },
+  {
+    "country": "Brunei Darussalam",
+    "currency": "Brunei Dollar",
+    "currency_code": "BND"
+  },
+  {
+    "country": "Bulgaria",
+    "currency": "Bulgarian Lev",
+    "currency_code": "BGN"
+  },
+  {
+    "country": "Burkina Faso",
+    "currency": "CFA Franc BCEAO",
+    "currency_code": "XOF"
+  },
+  {
+    "country": "Burundi",
+    "currency": "Burundian Franc",
+    "currency_code": "BIF"
+  }
+]

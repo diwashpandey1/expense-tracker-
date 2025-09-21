@@ -1,6 +1,5 @@
-import Header from "../Components/common/Header.jsx";
-import BlogHero from "../Components/blog/BlogHero.jsx";
-import BlogCardSection from "../Components/blog/BlogCardSection.jsx";
+import Header from "../Components/Common/Header.jsx";
+import Blog from "../Components/blog/Blog.jsx";
 import Footer from "../Components/common/Footer.jsx";
 
 function BlogPage() {
@@ -8,9 +7,7 @@ function BlogPage() {
   return (
     <>
     <Header />
-    <BlogHero />
-    <hr className="my-10 border-gray-500"/>
-    <BlogCardSection />
+    <Blog/>
     <Footer />
     </>
   );

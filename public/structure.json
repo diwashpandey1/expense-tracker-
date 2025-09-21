@@ -1,0 +1,79 @@
+{
+  "users": {
+    "uid1": {
+      "userId": "userid123",
+      "name": "User 1",
+      "email": "user1@example.com",
+      "currency": "$",
+      "totalBalnce": 23000,
+      "totalExpense": 2300,
+      "totalSaving": 2300,
+      "categories": {
+        "income": {
+          "salary": 2300,
+          "gift": 2300
+        },
+        "expense": {
+          "gift": 200,
+          "food": 500
+        },
+        "saving": {
+          "bank": 4000,
+          "piggybank": 400
+        }
+      },
+      "monthlyincome": 5000,
+      "savingCards": {
+        "cardId1": {
+          "type": "saving",
+          "category": "mutual fund",
+          "addedDate": "22-01-2025",
+          "note": "Its for my work"
+        },
+        "cardId2": {
+          "type": "saving",
+          "category": "ban;",
+          "addedDate": "25-01-2025",
+          "note": "Its for mobile"
+        }
+      },
+      "incomeCards": {
+        "cardId1": {
+          "type": "income",
+          "category": "gift",
+          "addedDate": "22-01-2025",
+          "note": "Its for my work"
+        },
+        "cardId2": {
+          "type": "income",
+          "category": "salary",
+          "addedDate": "25-01-2025",
+          "note": "Its for mobile"
+        }
+      },
+      "expenseCards": {
+        "cardId1": {
+          "type": "expense",
+          "category": "gift",
+          "addedDate": "22-01-2025",
+          "note": "Its for my work"
+        },
+        "cardId2": {
+          "type": "expense",
+          "category": "food",
+          "addedDate": "25-01-2025",
+          "note": "Its for mobile"
+        }
+      },
+      "goalcard": {
+        "cardId1": {
+          "goalname": "nameofgoal",
+          "goaltype": "saving",
+          "createdDate" : "22-01-2025",
+          "targetDate" : "22-02-2005",
+          "note": "note is written here"
+        }
+      }
+    }
+  }
+}
