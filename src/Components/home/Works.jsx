@@ -1,25 +1,57 @@
+import { motion } from "framer-motion";
 
 function Works() {
-  
+  // Step data
+  const steps = [
+    {
+      id: 1,
+      title: "Open Expense Tracker",
+      desc: "Access your dashboard from anywhere and start managing your finances.",
+    },
+    {
+      id: 2,
+      title: "Track Expenses",
+      desc: "Add daily expenses, categorize them, and monitor your spending habits.",
+    },
+    {
+      id: 3,
+      title: "Get Insights",
+      desc: "Visualize your spending patterns and receive insights to save smarter.",
+    },
+  ];
+
   return (
-    <section className="w-[100%] h-[60vh] flex justify-center items-center mb-[60px] mb:mb-0">
-      <div className="content h-auto md:h-[80%] w-[100%] flex flex-col items-center justify-center  bg-[#ECFDF5]">
-          <h2 className="text-black text-[1.6em] font-bold mb-[40px]">How it Works ?</h2>
-          <div className="flex flex-col md:flex-row justify-around w-[90%] items-center ">
-            <div className="flex flex-col gap-[20px] items-center w-auto md:w-[30%] mb-10 md:mb-0">
-              <span className="w-[50px] h-[50px] bg-[#D1FAE5] rounded-[50%] flex justify-center items-center">1</span>
-              <h3 className="text-[1.4em] md:text-[1.2em] font-semibold">Open Expense-Tracker</h3>
-            </div>
-            <div className="flex flex-col gap-[20px] items-center w-auto md:w-[30%] mb-10 md:mb-0">
-              <span className="w-[50px] h-[50px] bg-[#D1FAE5] rounded-[50%] flex justify-center items-center">2</span>
-              <h3 className="text-[1.4em] md:text-[1.2em] font-semibold">Track Expences</h3>
-            </div>
-            <div className="flex flex-col gap-[20px] items-center w-auto md:w-[30%] mb-10 md:mb-0">
-              <span className="w-[50px] h-[50px] bg-[#D1FAE5] rounded-[50%] flex justify-center items-center">3</span>
-              <h3 className="text-[1.4em] md:text-[1.2em] font-semibold">Get Insights</h3>
-            </div>
-          </div>
+    <section className="w-full py-16 flex justify-center items-center bg-[#ECFDF5]">
+      <div className="w-[90%] flex flex-col items-center">
+        <motion.h2
+          className="text-black text-[2em] md:text-[2.2em] font-bold mb-16"
+          initial={{ opacity: 0, y: -30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7 }}
+          viewport={{ once: false }}
+        >
+          How it Works
+        </motion.h2>
+
+        <div className="flex flex-col items-center justify-around w-full gap-12 md:flex-row">
+          {steps.map((step) => (
+            <motion.div
+              key={step.id}
+              className="flex flex-col items-center gap-5 md:w-[30%] text-center"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: step.id * 0.2 }}
+              viewport={{ once: false }}
+            >
+              <span className="w-16 h-16 md:w-20 md:h-20 bg-[#D1FAE5] rounded-full flex justify-center items-center text-green-600 font-bold text-lg md:text-xl shadow-md">
+                {step.id}
+              </span>
+              <h3 className="text-[1.2em] md:text-[1.4em] font-semibold">{step.title}</h3>
+              <p className="text-gray-600 text-[0.95em] md:text-[1em]">{step.desc}</p>
+            </motion.div>
+          ))}
         </div>
+      </div>
     </section>
   );
 }

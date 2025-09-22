@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, updateProfile } from "firebase/auth";
+import { getAuth,GoogleAuthProvider,updateProfile } from "firebase/auth";
 import { getDatabase } from "firebase/database";
 import { getFirestore } from "firebase/firestore"; 
 import { getStorage } from "firebase/storage"; // Uncomment if you need Firebase Storage
@@ -23,6 +23,11 @@ const firebaseConfig = {
   databaseURL: import.meta.env.VITE_F_DATABASEURL,
 };
 
+if (window.location.hostname === "localhost") {
+  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+}
+
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -33,11 +38,15 @@ const firestore = getFirestore(app);
 const storage = getStorage(app); 
 
 
+
+
 const appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY
 ),
   isTokenAutoRefreshEnabled: true, // automatically refresh token
 });
+
+
 // const updateProfile = updateProfile(app);
 export {auth, googleProvider, database, firestore, storage, updateProfile};
 

@@ -1,137 +1,162 @@
 import React, { useState } from "react";
 import { useExpenseContext } from "./ExpenseContext";
-import Popup from "../smallComps/Popup.jsx";
-import { auth } from "../../backend/Firebase.jsx";
-import { GoogleAuthProvider, reauthenticateWithPopup, deleteUser, signOut } from "firebase/auth";
+import {
+  reauthenticateWithPopup,
+  reauthenticateWithCredential,
+  EmailAuthProvider,
+  deleteUser,
+  signOut,
+} from "firebase/auth";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { firestore, googleProvider, auth, storage } from "../../backend/Firebase.jsx";
+import { ref, deleteObject } from "firebase/storage";
+import toast from "react-hot-toast";
 
 function ExpenseSetting() {
-  const {
-    currency,
-    setCurrency,
-    setMonthlyIncome,
-    addCategory,
-    setAddCategory,
-    expenseCategories,
-    setExpenseCategories,
-  } = useExpenseContext();
+  const { currency, setCurrency } = useExpenseContext();
 
-  const [popupData, setPopupData] = useState({
+  // Popup state
+  const [popup, setPopup] = useState({
     isOpen: false,
     title: "",
     message: "",
     onConfirm: null,
+    requirePassword: false,
   });
+  const [passwordInput, setPasswordInput] = useState("");
 
-  const [reauthPassword, setReauthPassword] = useState(""); // For storing re-authentication password
-
-  const handleCurrencyChange = (e) => {
-    setCurrency(e.target.value);
+  const openPopup = (title, message, onConfirm, requirePassword = false) => {
+    setPasswordInput("");
+    setPopup({ isOpen: true, title, message, onConfirm, requirePassword });
   };
 
-  const handleSaveButton = () => {
-    if (addCategory.trim() === "") return;
-    if (expenseCategories.some((cat) => cat.category === addCategory)) {
-      alert("Category already exists!");
-      return;
+  const closePopup = () =>
+    setPopup({ isOpen: false, title: "", message: "", onConfirm: null, requirePassword: false });
+
+  // Delete Firestore data
+  const deleteUserData = async (uid) => {
+    try {
+      // Delete transactions
+      const txRef = collection(firestore, "transactionDetails", uid, "transactions");
+      const txSnap = await getDocs(txRef);
+      await Promise.all(txSnap.docs.map((d) => deleteDoc(doc(txRef, d.id))));
+
+      // Delete goals
+      const goalsRef = collection(firestore, "goals", uid, "userGoals");
+      const goalsSnap = await getDocs(goalsRef);
+      await Promise.all(goalsSnap.docs.map((d) => deleteDoc(doc(goalsRef, d.id))));
+    } catch (err) {
+      console.error("Error deleting Firestore data:", err);
     }
-    setExpenseCategories([
-      ...expenseCategories,
-      { category: addCategory, total: 0 },
-    ]);
-    setAddCategory("");
   };
 
-  const handleMonthlyIncomeChange = (e) => {
-    const value = parseFloat(e.target.value);
-    if (value < 0) {
-      alert("Monthly income cannot be negative!");
-      return;
+  // Delete Storage data
+  const deleteUserStorage = async (uid) => {
+    try {
+      const profilePicRef = ref(storage, `profilePictures/${uid}.jpg`); // adjust path if needed
+      await deleteObject(profilePicRef);
+    } catch (err) {
+      if (err.code !== "storage/object-not-found") {
+        console.error("Error deleting profile picture:", err);
+      }
     }
-    setMonthlyIncome(value);
   };
 
-  const handlePopupOpen = (title, message, onConfirm) => {
-    setPopupData({
-      isOpen: true,
-      title,
-      message,
-      onConfirm,
-    });
-  };
-
-  const handlePopupClose = () => {
-    setPopupData({ isOpen: false, title: "", message: "", onConfirm: null });
-  };
-
-  const handleResetData = () => {
-    console.log("Data has been reset.");
-    handlePopupClose();
-  };
-
-
-const handleDeleteAccount = async () => {
-   try {
-      const provider = new GoogleAuthProvider();
+  // Final delete account handler
+  const handleDeleteAccount = async (passwordInput = null) => {
+    try {
       const user = auth.currentUser;
+      if (!user) return;
 
-      if (!user) {
-         console.error("No user is logged in.");
-         return;
+      // Step 1: Reauthenticate
+      if (user.providerData[0]?.providerId === "password") {
+        if (!passwordInput) {
+          toast.error("Please enter your password to confirm deletion.");
+          return;
+        }
+        const credential = EmailAuthProvider.credential(user.email, passwordInput);
+        await reauthenticateWithCredential(user, credential);
+      } else {
+        await reauthenticateWithPopup(user, googleProvider);
       }
 
-      // Prompt the user to reauthenticate
-      await reauthenticateWithPopup(user, provider);
+      // Step 2: Delete Firestore + Storage
+      await deleteUserData(user.uid);
+      await deleteUserStorage(user.uid);
 
-      // After successful reauthentication, delete the user
+      // Step 3: Delete Auth account
       await deleteUser(user);
 
-      alert("Your account has been deleted successfully.");
-   } catch (error) {
-      console.error("Error deleting account:", error.message);
-      if (error.code === "auth/requires-recent-login") {
-         alert("Please log in again to confirm your identity before deleting your account.");
-      } 
-   } finally {
-      handlePopupClose();
-   }
-};
-
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth); // This signs the user out
-    } catch (error) {
-      console.error("Error logging out:", error);
+      toast.success("Your account and all associated data have been permanently deleted.");
+    } catch (err) {
+      if (err.code === "auth/wrong-password") {
+        toast.error("Incorrect password. Try again.");
+      } else if (err.code === "auth/requires-recent-login") {
+        toast.error("Please log in again to confirm your identity.");
+      } else {
+        console.error("Delete account error:", err);
+        toast.error("Failed to delete account. Try again.");
+      }
+    } finally {
+      closePopup();
     }
   };
 
-  
+  // Reset all data (delete Firestore transactions + goals)
+  const handleResetData = async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const transactionsRef = collection(firestore, "transactionDetails", user.uid, "transactions");
+      const goalsRef = collection(firestore, "goals", user.uid, "userGoals");
+
+      const transactionsSnapshot = await getDocs(transactionsRef);
+      const goalsSnapshot = await getDocs(goalsRef);
+
+      const deleteTransactions = transactionsSnapshot.docs.map((docSnap) =>
+        deleteDoc(doc(transactionsRef, docSnap.id))
+      );
+      const deleteGoals = goalsSnapshot.docs.map((docSnap) => deleteDoc(doc(goalsRef, docSnap.id)));
+
+      await Promise.all([...deleteTransactions, ...deleteGoals]);
+
+      toast.success("All data has been reset.");
+    } catch (err) {
+      console.error("Error resetting data:", err);
+      toast.error("Failed to reset data.");
+    } finally {
+      closePopup();
+    }
+  };
+
+  // Logout
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      closePopup();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
-    <section className="w-full min-h-[90vh] h-auto p-1 pb-10 md:p-6 bg-gray-100 flex justify-center">
-      <div className="flex gap-10 flex-col w-[97%] md:w-[50%]">
-        <div className="w-full bg-white shadow-lg rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-6">General Settings</h1>
-          <hr className="mb-10" />
+    <section className="w-full min-h-[90vh] p-6 flex justify-center bg-gray-100">
+      <div className="flex flex-col gap-6 w-[97%] md:w-[50%]">
+        {/* General Settings */}
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <h1 className="mb-6 text-2xl font-bold text-gray-800">General Settings</h1>
+          <hr className="mb-6 border-gray-300" />
 
-          <div className="mb-6 flex flex-col md:flex-row justify-between items-center">
-            <label
-              htmlFor="currency"
-              className="block text-sm font-medium text-gray-700"
-            >
-              <span>Currency ({currency})</span>
-              <span className="block text-gray-500 text-sm">
-                Select your preferred currency
-              </span>
-            </label>
+          {/* Currency */}
+          <div className="flex flex-col items-center justify-between mb-6 md:flex-row">
+            <label className="text-gray-700">Currency ({currency})</label>
             <select
-              name="currency"
-              id="currency"
               value={currency}
-              onChange={handleCurrencyChange}
-              className="block w-[15em] border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 p-2"
+              onChange={(e) => setCurrency(e.target.value)}
+              className="w-[15em] p-2 rounded-md border border-gray-300 bg-white text-gray-800"
             >
-              <option value="💰">Select Currency </option>
+              <option value="💰">Select Currency</option>
               <option value="रु">NPR - Nepali Rupee (रु)</option>
               <option value="$">USD - US Dollar ($)</option>
               <option value="€">EUR - Euro (€)</option>
@@ -139,101 +164,85 @@ const handleDeleteAccount = async () => {
               <option value="¥">JPY - Japanese Yen (¥)</option>
             </select>
           </div>
-
-          <div className="mb-6 flex flex-col md:flex-row justify-between items-center">
-            <label
-              htmlFor="monthlyIncome"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Monthly Income
-            </label>
-            <input
-              type="number"
-              id="monthlyIncome"
-              onChange={handleMonthlyIncomeChange}
-              placeholder="Enter your monthly income"
-              className="block w-[15em] border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 p-2"
-            />
-          </div>
-
-          <div className="mb-6 flex flex-col md:flex-row justify-between items-center">
-            <label
-              htmlFor="AddCategory"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Add Category
-            </label>
-            <input
-              className="block w-[15em] border-gray-300 rounded-md shadow-md focus:ring-blue-500 focus:border-blue-500 p-2"
-              id="new-category"
-              type="text"
-              value={addCategory}
-              onChange={(e) => setAddCategory(e.target.value)}
-              placeholder="Enter category name"
-            />
-          </div>
-
-          <button
-            onClick={handleSaveButton}
-            className="py-1 px-4 text-xl mt-5 bg-green-400 rounded-md text-white"
-          >
-            Save
-          </button>
         </div>
 
-        <div className="w-full bg-white shadow-lg rounded-lg p-6">
-          <h1 className="text-2xl font-bold mb-6 text-red-400">
-            Account/Data Settings
-          </h1>
-          <hr className="mb-10" />
-          <div className="flex gap-4 flex-col md:flex-row">
+        {/* Account Settings */}
+        <div className="p-6 bg-white rounded-lg shadow-lg">
+          <h1 className="mb-6 text-2xl font-bold text-red-400">Account Settings</h1>
+          <hr className="mb-6 border-gray-300" />
+          <div className="flex flex-col gap-4 md:flex-row">
             <button
               onClick={() =>
-                handlePopupOpen(
-                  "Reset All Data",
-                  "Are you sure you want to reset all data?",
-                  handleResetData
-                )
-              }
-              className="px-3 py-2 bg-red-100 hover:bg-red-400 hover:text-white transition-all  rounded-lg text-red-400 font-semibold shadow-sm"
-            >
-              Reset All Data
-            </button>
-            <button
-              onClick={() =>
-                handlePopupOpen(
+                openPopup(
                   "Delete Account",
-                  "Enter your password to confirm deletion:",
-                  handleDeleteAccount
+                  "This will permanently delete your account. Enter your password if required.",
+                  handleDeleteAccount,
+                  auth.currentUser?.providerData[0]?.providerId === "password"
                 )
               }
-              className="px-3 py-2 bg-red-100 hover:bg-red-400 hover:text-white transition-all rounded-lg text-red-400 font-semibold shadow-sm"
+              className="px-3 py-2 font-semibold text-red-400 bg-red-100 rounded-lg hover:bg-red-400 hover:text-white"
             >
               Delete Account
             </button>
             <button
+              onClick={() =>
+                openPopup(
+                  "Reset All Data",
+                  "Are you sure you want to reset all your transactions?",
+                  handleResetData
+                )
+              }
+              className="px-3 py-2 font-semibold text-red-400 bg-red-100 rounded-lg hover:bg-red-400 hover:text-white"
+            >
+              Reset All Data
+            </button>
+            <button
               onClick={handleLogout}
-              className="px-3 py-2 bg-red-100 hover:bg-red-400 hover:text-white transition-all rounded-lg text-red-400 font-semibold shadow-sm"
+              className="px-3 py-2 font-semibold text-red-400 bg-red-100 rounded-lg hover:bg-red-400 hover:text-white"
             >
               Log Out
             </button>
           </div>
-          <p className="my-2 text-sm text-gray-500">
-            Once data is reset or account is deleted, there is no way to
-            recover.
+          <p className="mt-2 text-sm text-gray-500">
+            Deleting your account or resetting data is irreversible. Logout will end your session.
           </p>
         </div>
-        <div className="w-full h-[10vh]"></div>
       </div>
 
-      {/* Popup Component */}
-      <Popup
-        title={popupData.title}
-        message={popupData.message}
-        clickedOkey={popupData.onConfirm}
-        isPopUpOpen={popupData.isOpen}
-        setIsPopUpOpen={() => setPopupData({ ...popupData, isOpen: false })}
-      />
+      {/* Inline Popup */}
+      {popup.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <div className="p-6 bg-white rounded-lg shadow-lg w-[90%] max-w-md">
+            <h2 className="mb-4 text-xl font-bold text-gray-800">{popup.title}</h2>
+            <p className="mb-6 text-gray-600">{popup.message}</p>
+
+            {popup.requirePassword && (
+              <input
+                type="password"
+                value={passwordInput}
+                onChange={(e) => setPasswordInput(e.target.value)}
+                placeholder="Enter your password"
+                className="w-full p-2 mb-4 border border-gray-300 rounded-lg"
+              />
+            )}
+
+            <div className="flex justify-end gap-4">
+              <button
+                onClick={closePopup}
+                className="px-4 py-2 transition-colors bg-gray-300 rounded-lg hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => popup.onConfirm(passwordInput)}
+                className="px-4 py-2 text-white transition-colors bg-red-400 rounded-lg hover:bg-red-500"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

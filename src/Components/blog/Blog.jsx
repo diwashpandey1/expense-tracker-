@@ -104,7 +104,7 @@ function Blog() {
                      {/* Image Container */}
                      <div className="overflow-hidden">
                         <img
-                           src={card.image}
+                           src={`https://source.unsplash.com/featured/300x300/?${card.tags[0]},${card.tags[1]}`}
                            alt={card.title}
                            className="object-cover w-full h-48 transition-transform duration-500 ease-in-out group-hover:scale-105"
                         />
