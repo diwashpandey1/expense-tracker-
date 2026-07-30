@@ -1,9 +1,59 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../backend/AuthContext";
 import { firestore } from "../../backend/Firebase";
 import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 
 const ExpenseContext = createContext();
+
+const DEFAULT_CATEGORIES = {
+  expense: [
+    { name: "Housing", totalAmount: 0 },
+    { name: "Childcare", totalAmount: 0 },
+    { name: "Transportation", totalAmount: 0 },
+    { name: "Utilities", totalAmount: 0 },
+    { name: "Food/Supplies", totalAmount: 0 },
+    { name: "Pets", totalAmount: 0 },
+    { name: "Entertainment", totalAmount: 0 },
+    { name: "Healthcare", totalAmount: 0 },
+    { name: "Insurance", totalAmount: 0 },
+    { name: "Personal Care", totalAmount: 0 },
+    { name: "Debt", totalAmount: 0 },
+    { name: "Gifts", totalAmount: 0 },
+    { name: "Donations", totalAmount: 0 },
+    { name: "Clothing", totalAmount: 0 },
+    { name: "Education", totalAmount: 0 },
+    { name: "Subscriptions", totalAmount: 0 },
+    { name: "Miscellaneous", totalAmount: 0 },
+    { name: "Taxes", totalAmount: 0 },
+  ],
+  income: [
+    { name: "Salary", totalAmount: 0 },
+    { name: "House Property", totalAmount: 0 },
+    { name: "Profits and Gains", totalAmount: 0 },
+    { name: "Capital Gain", totalAmount: 0 },
+    { name: "Gifts", totalAmount: 0 },
+    { name: "Investments", totalAmount: 0 },
+    { name: "Side Hustles", totalAmount: 0 },
+    { name: "Government Benefits", totalAmount: 0 },
+  ],
+  saving: [
+    { name: "Retirement Funds", totalAmount: 0 },
+    { name: "Emergency Funds", totalAmount: 0 },
+    { name: "College Funds", totalAmount: 0 },
+    { name: "Travel Funds", totalAmount: 0 },
+    { name: "Sinking Funds", totalAmount: 0 },
+    { name: "Common Savings", totalAmount: 0 },
+    { name: "Medical Funds", totalAmount: 0 },
+    { name: "Child Savings", totalAmount: 0 },
+    { name: "Large Purchases", totalAmount: 0 },
+  ],
+};
+
+const getEmptyCategoryTotals = () => ({
+  expense: DEFAULT_CATEGORIES.expense.map((cat) => ({ ...cat, totalAmount: 0 })),
+  income: DEFAULT_CATEGORIES.income.map((cat) => ({ ...cat, totalAmount: 0 })),
+  saving: DEFAULT_CATEGORIES.saving.map((cat) => ({ ...cat, totalAmount: 0 })),
+});
 
 export function ExpenseProvider({ children }) {
   const { UID } = useContext(AuthContext);
@@ -22,49 +72,7 @@ export function ExpenseProvider({ children }) {
 
   const [transactions, setTransactions] = useState([]);
 
-  const [categories, setCategories] = useState({
-    expense: [
-      { name: "Housing", totalAmount: 0 },
-      { name: "Childcare", totalAmount: 0 },
-      { name: "Transportation", totalAmount: 0 },
-      { name: "Utilities", totalAmount: 0 },
-      { name: "Food/Supplies", totalAmount: 0 },
-      { name: "Pets", totalAmount: 0 },
-      { name: "Entertainment", totalAmount: 0 },
-      { name: "Healthcare", totalAmount: 0 },
-      { name: "Insurance", totalAmount: 0 },
-      { name: "Personal Care", totalAmount: 0 },
-      { name: "Debt", totalAmount: 0 },
-      { name: "Gifts", totalAmount: 0 },
-      { name: "Donations", totalAmount: 0 },
-      { name: "Clothing", totalAmount: 0 },
-      { name: "Education", totalAmount: 0 },
-      { name: "Subscriptions", totalAmount: 0 },
-      { name: "Miscellaneous", totalAmount: 0 },
-      { name: "Taxes", totalAmount: 0 },
-    ],
-    income: [
-      { name: "Salary", totalAmount: 0 },
-      { name: "House Property", totalAmount: 0 },
-      { name: "Profits and Gains", totalAmount: 0 },
-      { name: "Capital Gain", totalAmount: 0 },
-      { name: "Gifts", totalAmount: 0 },
-      { name: "Investments", totalAmount: 0 },
-      { name: "Side Hustles", totalAmount: 0 },
-      { name: "Government Benefits", totalAmount: 0 },
-    ],
-    saving: [
-      { name: "Retirement Funds", totalAmount: 0 },
-      { name: "Emergency Funds", totalAmount: 0 },
-      { name: "College Funds", totalAmount: 0 },
-      { name: "Travel Funds", totalAmount: 0 },
-      { name: "Sinking Funds", totalAmount: 0 },
-      { name: "Common Savings", totalAmount: 0 },
-      { name: "Medical Funds", totalAmount: 0 },
-      { name: "Child Savings", totalAmount: 0 },
-      { name: "Large Purchases", totalAmount: 0 },
-    ],
-  });
+  const [categories, setCategories] = useState(getEmptyCategoryTotals);
 
   useEffect(() => {
     if (!UID) return;
@@ -83,11 +91,7 @@ export function ExpenseProvider({ children }) {
       let incomeSum = 0;
       let expenseSum = 0;
       let savingsSum = 0;
-      const newCategoryTotals = {
-        expense: categories.expense.map(cat => ({...cat, totalAmount: 0})),
-        income: categories.income.map(cat => ({...cat, totalAmount: 0})),
-        saving: categories.saving.map(cat => ({...cat, totalAmount: 0})),
-      };
+      const newCategoryTotals = getEmptyCategoryTotals();
 
       fetchedTransactions.forEach((t) => {
         const amount = Number(t.amount);
@@ -132,6 +136,7 @@ export function ExpenseProvider({ children }) {
         totalSavings,
         totalExpense,
         categories,
+        setCategories,
         transactions,
         setTransactions,
       }}

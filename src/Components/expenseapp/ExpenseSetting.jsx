@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useExpenseContext } from "./ExpenseContext";
 import {
   reauthenticateWithPopup,
@@ -9,7 +9,7 @@ import {
 } from "firebase/auth";
 import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
 import { firestore, googleProvider, auth, storage } from "../../backend/Firebase.jsx";
-import { ref, deleteObject } from "firebase/storage";
+import { ref, deleteObject, listAll } from "firebase/storage";
 import toast from "react-hot-toast";
 
 function ExpenseSetting() {
@@ -45,6 +45,8 @@ function ExpenseSetting() {
       const goalsRef = collection(firestore, "goals", uid, "userGoals");
       const goalsSnap = await getDocs(goalsRef);
       await Promise.all(goalsSnap.docs.map((d) => deleteDoc(doc(goalsRef, d.id))));
+
+      await deleteDoc(doc(firestore, "users", uid));
     } catch (err) {
       console.error("Error deleting Firestore data:", err);
     }
@@ -53,8 +55,9 @@ function ExpenseSetting() {
   // Delete Storage data
   const deleteUserStorage = async (uid) => {
     try {
-      const profilePicRef = ref(storage, `profilePictures/${uid}.jpg`); // adjust path if needed
-      await deleteObject(profilePicRef);
+      const profilePicturesRef = ref(storage, `profile_pictures/${uid}`);
+      const profilePictures = await listAll(profilePicturesRef);
+      await Promise.all(profilePictures.items.map((itemRef) => deleteObject(itemRef)));
     } catch (err) {
       if (err.code !== "storage/object-not-found") {
         console.error("Error deleting profile picture:", err);

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useExpenseContext } from "./ExpenseContext";
 import GoalCard from "./GoalCard";
 import { Target, PiggyBank, Wallet, Plus, X } from "lucide-react";

@@ -1,14 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import Homepage from "./Pages/Homepage.jsx";
-import ToolsPage from "./Pages/ToolsPage.jsx";
-import BlogPage from "./Pages/BlogPage.jsx";
-import ExpenseTrackerApp from "./Pages/ExpenseTrackerApp.jsx";
+import { lazy, Suspense, useContext } from "react";
 import { AuthProvider } from "./backend/AuthContext.jsx";
-import LoginForm from "./Components/Common/LoginForm.jsx";
-import SignupForm from "./Components/Common/SignupForm.jsx";
-import Profile from "./Components/Common/Profile.jsx";
-import ForgetPassword from "./Components/Common/ForgetPassword.jsx";
+import { AuthContext } from "./backend/AuthContext.jsx";
+
+const Homepage = lazy(() => import("./Pages/Homepage.jsx"));
+const ToolsPage = lazy(() => import("./Pages/ToolsPage.jsx"));
+const BlogPage = lazy(() => import("./Pages/BlogPage.jsx"));
+const ExpenseTrackerApp = lazy(() => import("./Pages/ExpenseTrackerApp.jsx"));
+const LoginForm = lazy(() => import("./Components/Common/LoginForm.jsx"));
+const SignupForm = lazy(() => import("./Components/Common/SignupForm.jsx"));
+const Profile = lazy(() => import("./Components/Common/Profile.jsx"));
+const ForgetPassword = lazy(() => import("./Components/Common/ForgetPassword.jsx"));
 
 // Page transition wrapper
 const PageTransition = ({ children }) => (
@@ -26,20 +29,27 @@ const PageTransition = ({ children }) => (
 // Separate component to use useLocation inside Router
 const AnimatedRoutes = () => {
   const location = useLocation();
+  const { loading } = useContext(AuthContext);
+
+  if (loading) {
+    return null;
+  }
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<PageTransition><Homepage /></PageTransition>} />
-        <Route path="/login" element={<PageTransition><LoginForm /></PageTransition>} />
-        <Route path="/signup" element={<PageTransition><SignupForm /></PageTransition>} />
-        <Route path="/forget-password" element={<PageTransition><ForgetPassword /></PageTransition>} />
-        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-        <Route path="/tools/*" element={<PageTransition><ToolsPage /></PageTransition>} />
-        <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
-        <Route path="/expense-tracker-app/*" element={<PageTransition><ExpenseTrackerApp /></PageTransition>} />
-      </Routes>
-    </AnimatePresence>
+    <Suspense fallback={null}>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<PageTransition><Homepage /></PageTransition>} />
+          <Route path="/login" element={<PageTransition><LoginForm /></PageTransition>} />
+          <Route path="/signup" element={<PageTransition><SignupForm /></PageTransition>} />
+          <Route path="/forget-password" element={<PageTransition><ForgetPassword /></PageTransition>} />
+          <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+          <Route path="/tools/*" element={<PageTransition><ToolsPage /></PageTransition>} />
+          <Route path="/blog" element={<PageTransition><BlogPage /></PageTransition>} />
+          <Route path="/expense-tracker-app/*" element={<PageTransition><ExpenseTrackerApp /></PageTransition>} />
+        </Routes>
+      </AnimatePresence>
+    </Suspense>
   );
 };
 

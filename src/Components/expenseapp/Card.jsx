@@ -1,5 +1,3 @@
-import React from "react";
-
 function Card({ type, currency, amount, category, date, note }) {
    return (
       <div className="w-full bg-white rounded-lg shadow-md p-4 border border-gray-200 flex flex-col gap-3">

@@ -1,10 +1,11 @@
-import { useContext, useState, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef, useState } from "react";
 import { signOut, updateProfile } from "firebase/auth";
 import { AuthContext } from "../../backend/AuthContext";
 import { Navigate, Link } from "react-router-dom";
 import profilePlaceholder from "../../assets/images/profile.webp";
 import toast from "react-hot-toast";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { ensureUserDocument } from "../../backend/userProfile";
 import {
   ref,
   uploadBytes,
@@ -17,26 +18,19 @@ import { ArrowLeft, UploadCloud, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 function Profile() {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
   const [userData, setUserData] = useState(null);
   const [photoCount, setPhotoCount] = useState(0);
   const fileInputRef = useRef(null);
 
-  const fetchUserData = async () => {
+  const fetchUserData = useCallback(async () => {
     try {
       if (!user) {
-        console.log("No user logged in yet.");
         return;
       }
 
-      const docRef = doc(firestore, "users", user.uid);
-      const docSnap = await getDoc(docRef);
-
-      if (docSnap.exists()) {
-        setUserData(docSnap.data());
-      } else {
-        console.log("No such document!");
-      }
+      const profileData = await ensureUserDocument(user);
+      setUserData(profileData);
 
       const listRef = ref(storage, `profile_pictures/${user.uid}`);
       const result = await listAll(listRef);
@@ -45,11 +39,11 @@ function Profile() {
       console.error("Error fetching data:", err);
       toast.error("Failed to load profile data.");
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchUserData();
-  }, [user]);
+  }, [fetchUserData]);
 
   const handleSignOut = async () => {
     try {
@@ -108,15 +102,11 @@ function Profile() {
       });
 
       const userDocRef = doc(firestore, "users", user.uid);
-      const docSnap = await getDoc(userDocRef);
-
-      if (docSnap.exists()) {
-        await updateDoc(userDocRef, {
-          imageURL: downloadURL,
-        });
-      } else {
-        console.log("User document does not exist, skipping Firestore update.");
-      }
+      await setDoc(
+        userDocRef,
+        { imageURL: downloadURL, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
 
       setUserData((prev) => ({ ...prev, imageURL: downloadURL }));
       setPhotoCount(existingPhotos.items.length >= 3 ? 3 : existingPhotos.items.length + 1);
@@ -142,15 +132,11 @@ function Profile() {
       await Promise.all(deletePromises);
 
       const userDocRef = doc(firestore, "users", user.uid);
-      const docSnap = await getDoc(userDocRef);
-
-      if (docSnap.exists()) {
-        await updateDoc(userDocRef, {
-          imageURL: null,
-        });
-      } else {
-        console.log("User document does not exist, skipping Firestore update.");
-      }
+      await setDoc(
+        userDocRef,
+        { imageURL: null, updatedAt: serverTimestamp() },
+        { merge: true }
+      );
 
       setPhotoCount(0);
       setUserData((prev) => ({ ...prev, imageURL: null }));
@@ -163,6 +149,10 @@ function Profile() {
       });
     }
   };
+
+  if (loading) {
+    return null;
+  }
 
   if (!user) {
     return <Navigate to="/login" replace />;

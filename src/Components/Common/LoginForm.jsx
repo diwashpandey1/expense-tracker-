@@ -3,47 +3,47 @@ import { Link, Navigate } from "react-router-dom";
 import {
   auth,
   googleProvider,
-  firestore, // Import firestore to add user to 'users' collection
 } from "../../backend/Firebase";
 import { signInWithPopup, signInWithEmailAndPassword } from "firebase/auth";
 import { AuthContext } from "../../backend/AuthContext";
-import toast from "react-hot-toast"; // Import toast
-import { X, Eye, EyeOff } from "lucide-react"; // Import Lucide icons
-import { motion } from "framer-motion"; // Import Framer Motion
-import { doc, setDoc } from "firebase/firestore"; // Import doc and setDoc for Firestore
+import { ensureUserDocument } from "../../backend/userProfile";
+import toast from "react-hot-toast";
+import { X, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false); // State for password toggle
+  const [showPassword, setShowPassword] = useState(false);
+  const [authInProgress, setAuthInProgress] = useState(false);
 
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
 
-  // Redirect if user is already logged in
+  if (loading) {
+    return null;
+  }
+
   if (user) return <Navigate to="/" replace />;
 
   const handleGoogleSignIn = async () => {
+    if (authInProgress) return;
+
+    setAuthInProgress(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-
-      // Check if user exists in Firestore, if not, create a document
-      const userDocRef = doc(firestore, "users", user.uid);
-      const docSnap = await getDoc(userDocRef); // Use getDoc here
-
-      if (!docSnap.exists()) {
-        await setDoc(userDocRef, {
-          uid: user.uid,
-          name: user.displayName,
-          email: user.email,
-          imageURL: user.photoURL,
-          createdAt: new Date(),
-        });
-      }
+      await ensureUserDocument(result.user);
       toast.success("Signed in with Google successfully!");
     } catch (error) {
+      if (
+        error.code === "auth/cancelled-popup-request" ||
+        error.code === "auth/popup-closed-by-user"
+      ) {
+        return;
+      }
       console.error("Error with Google Sign-In", error.message);
       toast.error("Failed to sign in with Google. Please try again.");
+    } finally {
+      setAuthInProgress(false);
     }
   };
 
@@ -108,6 +108,7 @@ function LoginForm() {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
             className="w-full mb-4 px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]"
             required
           />
@@ -119,6 +120,7 @@ function LoginForm() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
               className="w-full px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981] pr-10" // Added pr-10 for eye icon spacing
               required
             />
@@ -162,6 +164,7 @@ function LoginForm() {
             <button
               type="button"
               onClick={handleGoogleSignIn}
+              disabled={authInProgress}
               className="flex items-center justify-center flex-1 gap-2 py-2 text-gray-700 transition bg-white rounded-lg hover:bg-gray-100"
             >
               <img

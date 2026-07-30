@@ -1,5 +1,5 @@
 // --- Main Workspace Component (Corrected) ---
-import React, {useState, useEffect, useContext} from "react";
+import {useState, useEffect, useContext} from "react";
 import {AuthContext} from "../../backend/AuthContext";
 import {useExpenseContext} from "./ExpenseContext";
 import {firestore} from "../../backend/Firebase";
@@ -94,8 +94,6 @@ function ExpenseIncomeAddForm({onClose, onSubmit, initialData, isEditMode}) {
    const [searchTerm, setSearchTerm] = useState(initialData?.category || "");
    const [type, setType] = useState(initialData?.type || "expense");
    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
-
-   const {user} = useContext(AuthContext);
 
    const handleSubmit = (e) => {
       e.preventDefault();

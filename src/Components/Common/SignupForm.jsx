@@ -3,14 +3,14 @@ import {faClose, faEye, faEyeSlash} from "@fortawesome/free-solid-svg-icons";
 import {useState, useContext} from "react";
 import {Link, Navigate} from "react-router-dom";
 import toast from "react-hot-toast";
-import {auth, googleProvider, firestore} from "../../backend/Firebase";
+import {auth, googleProvider} from "../../backend/Firebase";
 import {
    signInWithPopup,
    createUserWithEmailAndPassword,
    updateProfile,
 } from "firebase/auth";
 import {AuthContext} from "../../backend/AuthContext";
-import {doc, setDoc, serverTimestamp} from "firebase/firestore";
+import { ensureUserDocument } from "../../backend/userProfile";
 import { motion } from "framer-motion";
 
 function SignupForm() {
@@ -22,6 +22,7 @@ function SignupForm() {
    });
 
    const [showPassword, setShowPassword] = useState(false);
+   const [authInProgress, setAuthInProgress] = useState(false);
 
    const handleChange = (e) => {
       const {name, value} = e.target;
@@ -62,14 +63,10 @@ function SignupForm() {
             displayName: formData.fullName,
          });
 
-         // Save user to Firestore
-         await setDoc(doc(firestore, "users", user.uid), {
-            uid: user.uid,
+         await ensureUserDocument(user, {
             name: formData.fullName,
-            email: user.email,
-            password: formData.password, // ⚠️ Optional, not recommended
             imageURL: user.photoURL || null,
-            createdAt: serverTimestamp(),
+            provider: "password",
          });
 
          toast.success("Sign-up successful!");
@@ -88,29 +85,30 @@ function SignupForm() {
    };
 
    const handleGoogleSignIn = async () => {
+      if (authInProgress) return;
+
+      setAuthInProgress(true);
       try {
          const result = await signInWithPopup(auth, googleProvider);
-         const user = result.user;
-
-         // Save Google user to Firestore
-         await setDoc(doc(firestore, "users", user.uid), {
-            uid: user.uid,
-            name: user.displayName || "Google User",
-            email: user.email,
-            password: null, // No password for Google login
-            imageURL: user.photoURL || null,
-            provider: "google",
-            createdAt: serverTimestamp(),
-         });
+         await ensureUserDocument(result.user, { provider: "google.com" });
 
          toast.success("Google Sign-In Successful!");
       } catch (error) {
+         if (
+            error.code === "auth/cancelled-popup-request" ||
+            error.code === "auth/popup-closed-by-user"
+         ) {
+            return;
+         }
          console.error("Google Sign-In error:", error);
          toast.error("Failed to sign in with Google. Please try again.");
+      } finally {
+         setAuthInProgress(false);
       }
    };
 
-   const {user} = useContext(AuthContext);
+   const {user, loading} = useContext(AuthContext);
+   if (loading) return null;
    if (user) return <Navigate to="/" replace />;
 
    return (
@@ -145,6 +143,7 @@ function SignupForm() {
                   value={formData.fullName}
                   onChange={handleChange}
                   placeholder="Full Name"
+                  autoComplete="name"
                   className="w-full px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]"
                   required
                />
@@ -156,6 +155,7 @@ function SignupForm() {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Email"
+                  autoComplete="email"
                   className="w-full px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]"
                   required
                />
@@ -168,6 +168,7 @@ function SignupForm() {
                      value={formData.password}
                      onChange={handleChange}
                      placeholder="Password"
+                     autoComplete="new-password"
                      className="w-full px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]"
                      required
                   />
@@ -189,6 +190,7 @@ function SignupForm() {
                      value={formData.confirmPassword}
                      onChange={handleChange}
                      placeholder="Confirm Password"
+                     autoComplete="new-password"
                      className="w-full px-4 py-2 rounded-lg bg-white/30 text-white placeholder-gray-200 focus:outline-none focus:ring-2 focus:ring-[#10b981]"
                      required
                   />
@@ -221,6 +223,7 @@ function SignupForm() {
             <div className="flex gap-4">
                <button
                   onClick={handleGoogleSignIn}
+                  disabled={authInProgress}
                   className="flex items-center justify-center flex-1 gap-2 py-2 text-gray-700 transition bg-white rounded-lg hover:bg-gray-100">
                   <img
                      src="https://www.svgrepo.com/show/355037/google.svg"

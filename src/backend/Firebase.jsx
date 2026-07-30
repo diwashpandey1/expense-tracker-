@@ -1,17 +1,10 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth,GoogleAuthProvider,updateProfile } from "firebase/auth";
-import { getDatabase } from "firebase/database";
-import { getFirestore } from "firebase/firestore"; 
-import { getStorage } from "firebase/storage"; // Uncomment if you need Firebase Storage
+import { getAuth, GoogleAuthProvider, updateProfile } from "firebase/auth";
 import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
+import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_F_API_KEY,
   authDomain: import.meta.env.VITE_F_AUTHDOMAIN,
@@ -24,29 +17,21 @@ const firebaseConfig = {
 };
 
 if (window.location.hostname === "localhost") {
-  self.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+  globalThis.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
 }
 
-
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const googleProvider = new GoogleAuthProvider()
-const database = getDatabase(app)
-const firestore = getFirestore(app); 
+const googleProvider = new GoogleAuthProvider();
+const database = getDatabase(app);
+const firestore = getFirestore(app);
+const storage = getStorage(app);
 
-const storage = getStorage(app); 
+if (import.meta.env.VITE_RECAPTCHA_SITE_KEY) {
+  initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY),
+    isTokenAutoRefreshEnabled: true,
+  });
+}
 
-
-
-
-const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider(import.meta.env.VITE_RECAPTCHA_SITE_KEY
-),
-  isTokenAutoRefreshEnabled: true, // automatically refresh token
-});
-
-
-// const updateProfile = updateProfile(app);
-export {auth, googleProvider, database, firestore, storage, updateProfile};
-
+export { auth, googleProvider, database, firestore, storage, updateProfile };

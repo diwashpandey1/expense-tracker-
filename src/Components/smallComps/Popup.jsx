@@ -1,5 +1,3 @@
-import React from "react";
-
 function Popup({ title, message, clickedOkey, isPopUpOpen, setIsPopUpOpen }) {
   const closePopup = () => {
     setIsPopUpOpen(false); // Close the popup

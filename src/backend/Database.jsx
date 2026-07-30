@@ -1,11 +1,11 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect } from "react";
 import { useExpenseContext } from "../Components/expenseapp/ExpenseContext";
 import { database } from "./Firebase"; // Firebase should be initialized in this file
 import { AuthContext } from "./AuthContext";
 import { ref, set, onValue } from "firebase/database"; // Firebase Realtime Database methods
 
 function DataBase() {
-  const { user, UID } = useContext(AuthContext); // Get the authenticated user's information
+  const { UID } = useContext(AuthContext); // Get the authenticated user's information
   const {
     currency,
     setCurrency,
@@ -26,7 +26,7 @@ function DataBase() {
       const userRef = ref(database, `users/${UID}`); // Reference to user data in Firebase
 
       // Fetch data from Firebase on component mount
-      onValue(userRef, (snapshot) => {
+      const unsubscribe = onValue(userRef, (snapshot) => {
         const data = snapshot.val();
         if (data) {
           // Update the local state with data from Firebase
@@ -38,10 +38,12 @@ function DataBase() {
           setCategories(data.categories || []);
         }
       });
+
+      return () => unsubscribe();
     }
   }, [UID, setCurrency, setTotalBalance, setTotalIncome, setTotalSavings, setTotalExpense, setCategories]);
 
-  const saveDataToFirebase = () => {
+  const saveDataToFirebase = useCallback(() => {
     if (UID) {
       const userRef = ref(database, `users/${UID}`); // Reference to user data in Firebase
       const userData = {
@@ -61,12 +63,12 @@ function DataBase() {
           console.error("Error saving data:", error);
         });
     }
-  };
+  }, [UID, currency, totalBalance, totalIncome, totalSavings, totalExpense, categories]);
 
   useEffect(() => {
     // Save data to Firebase whenever any of the expense state changes
     saveDataToFirebase();
-  }, [currency, totalBalance, totalIncome, totalSavings, totalExpense, categories]); // Dependencies
+  }, [saveDataToFirebase]); // Dependencies
 
   return null; // This component does not render anything visible
 }

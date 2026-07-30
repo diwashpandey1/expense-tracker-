@@ -1,12 +1,8 @@
 import { Link } from "react-router-dom";
-import { AuthContext } from "../../backend/AuthContext";
-import { useContext } from "react";
 import { motion } from "framer-motion";
 import image from "../../assets/images/hero-image.png";
 
 function Hero() {
-  const { user } = useContext(AuthContext);
-
   return (
     <section className="w-full min-h-[90vh] flex justify-center items-center py-16 md:py-0">
       <div className="content w-[90%] flex flex-col md:flex-row justify-between items-center gap-12 mt-20 md:mt-16">

@@ -1,15 +1,16 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { ExpenseProvider } from "../Components/expenseapp/ExpenseContext.jsx";
-import ExpenseFooter from "../Components/expenseapp/ExpenseFooter.jsx";
-import ExpenseGoals from "../Components/expenseapp/ExpenseGoals.jsx";
-import ExpenseInsights from "../Components/expenseapp/ExpenseInsights.jsx";
-import ExpenseSetting from "../Components/expenseapp/ExpenseSetting.jsx";
-import ExpenseWorkSpace from "../Components/expenseapp/ExpenseWorkSpace.jsx";
 import Header from "../Components/Common/Header.jsx";
 import { AuthContext } from "../backend/AuthContext.jsx";
-import { useContext } from "react";
+import { lazy, Suspense, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
+
+const ExpenseFooter = lazy(() => import("../Components/expenseapp/ExpenseFooter.jsx"));
+const ExpenseGoals = lazy(() => import("../Components/expenseapp/ExpenseGoals.jsx"));
+const ExpenseInsights = lazy(() => import("../Components/expenseapp/ExpenseInsights.jsx"));
+const ExpenseSetting = lazy(() => import("../Components/expenseapp/ExpenseSetting.jsx"));
+const ExpenseWorkSpace = lazy(() => import("../Components/expenseapp/ExpenseWorkSpace.jsx"));
 
 // Page transition wrapper for nested routes
 const PageTransition = ({ children }) => (
@@ -25,7 +26,11 @@ const PageTransition = ({ children }) => (
 );
 
 function ExpenseTrackerApp() {
-  const { user } = useContext(AuthContext);
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return null;
+  }
 
   if (!user) {
     return (
@@ -80,45 +85,49 @@ function ExpenseTrackerApp() {
 
       <div className="flex flex-col h-screen">
         <div className="flex-grow overflow-y-auto">
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <PageTransition>
-                    <ExpenseWorkSpace />
-                  </PageTransition>
-                }
-              />
-              <Route
-                path="/insights"
-                element={
-                  <PageTransition>
-                    <ExpenseInsights />
-                  </PageTransition>
-                }
-              />
-              <Route
-                path="/goals"
-                element={
-                  <PageTransition>
-                    <ExpenseGoals />
-                  </PageTransition>
-                }
-              />
-              <Route
-                path="/setting"
-                element={
-                  <PageTransition>
-                    <ExpenseSetting />
-                  </PageTransition>
-                }
-              />
-            </Routes>
-          </AnimatePresence>
+          <Suspense fallback={null}>
+            <AnimatePresence mode="wait">
+              <Routes>
+                <Route
+                  path="/"
+                  element={
+                    <PageTransition>
+                      <ExpenseWorkSpace />
+                    </PageTransition>
+                  }
+                />
+                <Route
+                  path="/insights"
+                  element={
+                    <PageTransition>
+                      <ExpenseInsights />
+                    </PageTransition>
+                  }
+                />
+                <Route
+                  path="/goals"
+                  element={
+                    <PageTransition>
+                      <ExpenseGoals />
+                    </PageTransition>
+                  }
+                />
+                <Route
+                  path="/setting"
+                  element={
+                    <PageTransition>
+                      <ExpenseSetting />
+                    </PageTransition>
+                  }
+                />
+              </Routes>
+            </AnimatePresence>
+          </Suspense>
         </div>
         <div className="shrink-0">
-          <ExpenseFooter />
+          <Suspense fallback={null}>
+            <ExpenseFooter />
+          </Suspense>
         </div>
       </div>
     </ExpenseProvider>
