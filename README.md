@@ -84,6 +84,7 @@ The project includes a real Vitest setup focused on the core financial engine. T
 
 ## Environment Variables
 
+```text
 Example:
 
 VITE_F_API_KEY=your-api-key
@@ -95,7 +96,7 @@ VITE_F_APPID=your-app-id
 VITE_F_MEASUREMENTID=your-measurement-id
 VITE_F_DATABASEURL=https://your-project-default-rtdb.firebaseio.com
 VITE_RECAPTCHA_SITE_KEY=optional-site-key
-
+```
 ## Development
 
 Use the Vite development server for local iteration, and keep the business logic in reusable utilities rather than embedding it in component code.
